@@ -15,8 +15,14 @@ POSTS = [
      "title": "Second post",
      "content": "This is the second post."
     }
-    # ✅ Problematischen dritten Post komplett entfernt!
 ]
+
+# Helps to find post per ID
+def find_post_by_id(post_id):
+    for post in POSTS:
+        if post["id"] == post_id:
+            return post
+    return None
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
@@ -64,6 +70,29 @@ def delete(id):
     POSTS.remove(post_to_delete)
 
     return jsonify({"message": f"Post with id {id} has been deleted successfully."}), 200
+
+
+# PUT /api/posts/<id> → update an existing post
+@app.route('/api/posts/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    # Step 1: Find the post
+    post = find_post_by_id(post_id)
+    if post is None:
+        return jsonify({"error": "Post not found"}), 404
+
+    # Step 2: Get JSON data
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Request body must be JSON"}), 400
+
+    # Step 3: Update post (only if fields are provided)
+    if "title" in data:
+        post["title"] = data["title"]
+    if "content" in data:
+        post["content"] = data["content"]
+
+    # Step 4: Return updated post
+    return jsonify(post), 200
 
 
 if __name__ == '__main__':
