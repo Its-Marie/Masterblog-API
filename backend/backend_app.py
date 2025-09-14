@@ -46,7 +46,23 @@ def find_post_by_title_or_content():
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
-    return jsonify(POSTS)
+    # Query-Parameter for sorting
+    sort_field = request.args.get("sort")
+    direction = request.args.get("direction", "asc")
+
+    results = POSTS
+
+    if sort_field:
+        if sort_field not in ["title", "content"]:
+            return jsonify({"error": f"Invalid sort field: {sort_field}. Must be 'title' or 'content'."}), 400
+
+        if direction not in ["asc", "desc"]:
+            return jsonify({"error": f"Invalid direction: {direction}. Must be 'asc' or 'desc'."}), 400
+
+        reverse = direction == "desc"
+        results = sorted(POSTS, key=lambda post: post[sort_field].lower(), reverse=reverse)
+
+    return jsonify(results), 200
 
 
 # POST /api/posts → add a new post
