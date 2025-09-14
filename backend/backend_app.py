@@ -6,16 +6,17 @@ CORS(app)  # This will enable CORS for all routes
 
 POSTS = [
     {
-     "id": 1,
-     "title": "First post",
-     "content": "This is the first post."
+        "id": 1,
+        "title": "First post",
+        "content": "This is the first post."
     },
     {
-     "id": 2,
-     "title": "Second post",
-     "content": "This is the second post."
+        "id": 2,
+        "title": "Second post",
+        "content": "This is the second post."
     }
 ]
+
 
 # Helps to find post per ID
 def find_post_by_id(post_id):
@@ -54,7 +55,8 @@ def get_posts():
 
     if sort_field:
         if sort_field not in ["title", "content"]:
-            return jsonify({"error": f"Invalid sort field: {sort_field}. Must be 'title' or 'content'."}), 400
+            return jsonify({"error": f"Invalid sort field: {sort_field}. Must be 'title' or 'content'."
+            }), 400
 
         if direction not in ["asc", "desc"]:
             return jsonify({"error": f"Invalid direction: {direction}. Must be 'asc' or 'desc'."}), 400
