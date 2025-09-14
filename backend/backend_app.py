@@ -24,6 +24,26 @@ def find_post_by_id(post_id):
             return post
     return None
 
+
+@app.route('/api/posts/search', methods=['GET'])
+def find_post_by_title_or_content():
+    # Get query params (None if not provided)
+    title_query = request.args.get("title")
+    content_query = request.args.get("content")
+
+    # Filter posts
+    results = [
+        post for post in POSTS
+        if (
+            (title_query and title_query.lower() in post["title"].lower())
+            or (content_query and content_query.lower() in post["content"].lower())
+        )
+    ]
+
+    # Return matching posts (empty list if no matches)
+    return jsonify(results), 200
+
+
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
     return jsonify(POSTS)
