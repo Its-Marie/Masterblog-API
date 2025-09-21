@@ -28,6 +28,7 @@ function loadPosts() {
                 const postDiv = document.createElement('div');
                 postDiv.className = 'post';
                 postDiv.innerHTML = `<h2>${post.title}</h2><p>${post.content}</p>
+                <button onclick="editPost(${post.id}, '${post.title.replace(/'/g, "\\'")}', '${post.content.replace(/'/g, "\\'")}')">Edit</button>
                 <button onclick="deletePost(${post.id})">Delete</button>`;
                 postContainer.appendChild(postDiv);
             });
@@ -69,4 +70,109 @@ function deletePost(postId) {
         loadPosts(); // Reload the posts after deleting one
     })
     .catch(error => console.error('Error:', error));  // If an error occurs, log it to the console
+}
+
+// Search posts
+function searchPosts() {
+    var baseUrl = document.getElementById('api-base-url').value;
+    var titleQuery = document.getElementById('search-title').value;
+    var contentQuery = document.getElementById('search-content').value;
+
+    if (!titleQuery && !contentQuery) {
+        alert('Please enter a search term for title or content');
+        return;
+    }
+
+    var searchUrl = baseUrl + '/posts/search?';
+    if (titleQuery) searchUrl += 'title=' + encodeURIComponent(titleQuery) + '&';
+    if (contentQuery) searchUrl += 'content=' + encodeURIComponent(contentQuery);
+
+    fetch(searchUrl)
+        .then(response => response.json())
+        .then(data => {
+            displayPosts(data);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Clear search and reload all posts
+function clearSearch() {
+    document.getElementById('search-title').value = '';
+    document.getElementById('search-content').value = '';
+    loadPosts();
+}
+
+// Sort posts
+function sortPosts() {
+    var baseUrl = document.getElementById('api-base-url').value;
+    var sortField = document.getElementById('sort-field').value;
+    var sortDirection = document.getElementById('sort-direction').value;
+
+    if (!sortField) {
+        loadPosts(); // Just load normally if no sort field selected
+        return;
+    }
+
+    fetch(baseUrl + '/posts?sort=' + sortField + '&direction=' + sortDirection)
+        .then(response => response.json())
+        .then(data => {
+            displayPosts(data);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Open edit modal
+function editPost(postId, title, content) {
+    document.getElementById('edit-post-id').value = postId;
+    document.getElementById('edit-post-title').value = title;
+    document.getElementById('edit-post-content').value = content;
+    document.getElementById('edit-modal').style.display = 'flex';
+}
+
+// Close edit modal
+function closeEditModal() {
+    document.getElementById('edit-modal').style.display = 'none';
+}
+
+// Update post
+function updatePost() {
+    var baseUrl = document.getElementById('api-base-url').value;
+    var postId = document.getElementById('edit-post-id').value;
+    var title = document.getElementById('edit-post-title').value;
+    var content = document.getElementById('edit-post-content').value;
+
+    if (!title || !content) {
+        alert('Please fill in both title and content');
+        return;
+    }
+
+    fetch(baseUrl + '/posts/' + postId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title, content: content })
+    })
+        .then(response => response.json())
+        .then(data => {
+            closeEditModal();
+            loadPosts();
+            console.log('Post updated:', data);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Function to display posts in the container
+function displayPosts(posts) {
+    // Clear out the post container first
+    const postContainer = document.getElementById('post-container');
+    postContainer.innerHTML = '';
+
+    // For each post in the response, create a new post element and add it to the page
+    posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+        postDiv.innerHTML = `<h2>${post.title}</h2><p>${post.content}</p>
+        <button onclick="editPost(${post.id}, '${post.title.replace(/'/g, "\\'")}', '${post.content.replace(/'/g, "\\'")}')">Edit</button>
+        <button onclick="deletePost(${post.id})">Delete</button>`;
+        postContainer.appendChild(postDiv);
+    });
 }

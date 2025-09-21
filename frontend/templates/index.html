@@ -9,11 +9,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>📚 Blog Posts</h1>
+        <h1>Blog Posts</h1>
 
         <!-- API Configuration -->
         <div class="input-field">
-            <input type="text" id="api-base-url" placeholder="http://127.0.0.1:5002" value="https://mhirte-masterblog-api-5002.codio.io/api">
+            <input type="text" id="api-base-url" placeholder="http://127.0.0.1:5002" value=http://127.0.0.1:5002/api>
             <button onclick="loadPosts()">Load Posts</button>
         </div>
 
@@ -21,8 +21,7 @@
         <div class="input-field">
             <input type="text" id="search-title" placeholder="Search by title">
             <input type="text" id="search-content" placeholder="Search by content">
-            <button onclick="searchPosts()">🔍 Search Posts</button>
-            <button onclick="clearSearch()">Clear</button>
+            <button onclick="searchPosts()">Search Posts</button>
         </div>
 
         <!-- Sort Posts -->
@@ -36,7 +35,7 @@
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
             </select>
-            <button onclick="sortPosts()">↕️ Sort Posts</button>
+            <button onclick="sortPosts()">Sort Posts</button>
         </div>
 
         <!-- Add New Post -->
@@ -63,8 +62,7 @@
                     <textarea id="edit-post-content" placeholder="Post Content" rows="4"></textarea>
                 </div>
                 <div class="modal-buttons">
-                    <button onclick="updatePost()">💾 Update Post</button>
-                    <button onclick="closeEditModal()">❌ Cancel</button>
+                    <button onclick="updatePost()">Update Post</button>
                 </div>
             </div>
         </div>
